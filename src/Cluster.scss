@@ -1,0 +1,7 @@
+@import "sizes";
+
+.cluster {
+  display: grid;
+  grid-template-columns: $cell-size $cell-size $cell-size;
+  grid-template-rows: $cell-size $cell-size $cell-size;
+}

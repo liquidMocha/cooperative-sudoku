@@ -1,0 +1,13 @@
+@import "sizes";
+
+article {
+  display: flex;
+  justify-content: center;
+
+  .sudoku-grid {
+    display: grid;
+    grid-template-columns: calc(3 * #{$cell-size}) calc(3 * #{$cell-size}) calc(3 * #{$cell-size});
+    grid-template-rows: calc(3 * #{$cell-size}) calc(3 * #{$cell-size}) calc(3 * #{$cell-size});
+  }
+}
+
