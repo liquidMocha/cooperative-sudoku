@@ -3,7 +3,7 @@ import {useParams} from 'react-router-dom';
 import _ from 'lodash';
 import Row from './Row';
 import './Game.scss';
-import {getInitialGame, submitMove} from './Api';
+import {getGame, submitMove} from './Api';
 
 const blankBoard = () => [
   ...((_.range(9).map(index => _.range(9).map(index => {
@@ -15,7 +15,7 @@ const Game = () => {
   const [formations, setFormations] = useState(blankBoard());
 
   useEffect(() => {
-    getInitialGame(id).then((game) => {
+    getGame(id).then((game) => {
       const board = blankBoard();
 
       game.initialCells.forEach(cell => {
