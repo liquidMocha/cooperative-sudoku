@@ -1,0 +1,7 @@
+@import "sizes";
+
+.row {
+  display: grid;
+  grid-template-columns: repeat(9, $cell-size);
+  grid-template-rows: $cell-size;
+}

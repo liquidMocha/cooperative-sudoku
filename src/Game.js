@@ -1,43 +1,75 @@
 import React, {useEffect, useState} from 'react';
 import {useParams} from 'react-router-dom';
 import _ from 'lodash';
-import Cluster from './Cluster';
+import Row from './Row';
 import './Game.scss';
+import {getInitialGame, submitMove} from './Api';
+
+const blankBoard = () => [
+  ...((_.range(9).map(index => _.range(9).map(index => {
+    return {editable: true};
+  }))))];
 
 const Game = () => {
   const {id} = useParams();
-  const [moves, setMoves] = useState([]);
-  const [formations, setFormations] = useState(
-      [
-        ...((_.range(9).map(index =>
-            _.range(9).map(index => {
-              return {};
-            }),
-        ))),
-      ],
-  );
+  const [formations, setFormations] = useState(blankBoard());
+
+  useEffect(() => {
+    getInitialGame(id).then((game) => {
+      const board = blankBoard();
+
+      game.initialCells.forEach(cell => {
+        board[cell.row][cell.column] = {number: cell.number, editable: false};
+      });
+
+      _.sortBy(game.moves, [move => new Date(move.timestamp)]).forEach(move => {
+        board[move.row][move.column] = {
+          ...board[move.row][move.column],
+          number: move.number,
+        };
+      });
+
+      setFormations(board);
+    });
+  }, [id]);
 
   useEffect(() => {
     const eventSource = new EventSource(`http://localhost:8080/${id}/moves`);
     eventSource.onmessage = (event) => {
-      console.log('new data: ', event.data);
-      console.log('existing moves: ', moves);
-      setMoves(_.concat(moves, event.data));
+      const updateCell = JSON.parse(event.data);
+
+      setFormations(previousFormation => {
+        return updateFormation(
+            updateCell.row,
+            updateCell.column,
+            updateCell.number,
+            previousFormation,
+        );
+      });
     };
 
     return () => eventSource.close();
-  }, [moves, id]);
+  }, [id]);
 
   const cellChange = (row, column, number) => {
+    submitMove(id, row, column, number);
+
     setFormations(previousFormation => {
-      return previousFormation.map((r, rowIndex) => {
-        return r.map((col, columnIndex) => {
-          if (rowIndex === row && columnIndex === column) {
-            return number;
-          } else {
-            return previousFormation[rowIndex][columnIndex];
-          }
-        })
+      return updateFormation(row, column, number, previousFormation);
+    });
+  };
+
+  const updateFormation = (row, column, number, formation) => {
+    return formation.map((r, rowIndex) => {
+      return r.map((col, columnIndex) => {
+        if (rowIndex === row && columnIndex === column) {
+          return {
+            ...(formation[rowIndex][columnIndex]),
+            number,
+          };
+        } else {
+          return formation[rowIndex][columnIndex];
+        }
       });
     });
   };
@@ -47,7 +79,7 @@ const Game = () => {
         <div className="sudoku-grid">
           {formations.map(
               (formation, index) =>
-                  <Cluster
+                  <Row
                       key={`cluster-${index}`}
                       position={index}
                       formation={formation}

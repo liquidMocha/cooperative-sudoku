@@ -11,9 +11,20 @@ export const submitMove = (id, row, column, number) => {
       column: column,
       number: number,
     }),
-  }).then((response) => {
-    console.log(response);
-  }).catch((error) => {
-    console.log(error);
   });
+};
+
+export const getInitialGame = (id) => {
+  return fetch(`http://localhost:8080/${id}`, {
+    method: 'GET',
+    mode: 'cors',
+  }).then((response) => {
+    const reader = response.body.getReader();
+    return reader.read().then(body => {
+      return JSON.parse(new TextDecoder().decode(body.value));
+    })
+  }).catch(error => {
+    console.log(error);
+  })
+
 };
