@@ -3,7 +3,7 @@ import {useParams} from 'react-router-dom';
 import _ from 'lodash';
 import Row from './Row';
 import './Game.scss';
-import {getGame, submitMove} from './Api';
+import {getGame, movesEventSource, submitMove} from './Api';
 
 const blankBoard = () => [
   ...((_.range(9).map(index => _.range(9).map(index => {
@@ -34,7 +34,7 @@ const Game = () => {
   }, [id]);
 
   useEffect(() => {
-    const eventSource = new EventSource(`http://localhost:8080/${id}/moves`);
+    const eventSource = movesEventSource(id);
     eventSource.onmessage = (event) => {
       const updateCell = JSON.parse(event.data);
 

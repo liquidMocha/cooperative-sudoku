@@ -1,4 +1,4 @@
-const host = "http://localhost:8080";
+const host = process.env.REACT_APP_API || "http://localhost:8080";
 
 export const submitMove = (id, row, column, number) => {
   fetch(`${host}/${id}/move`, {
@@ -43,5 +43,8 @@ export const startNewGame = () => {
   }).catch((error) => {
     console.log(error);
   });
-
 };
+
+export const movesEventSource = (id) => {
+  return new EventSource(`${host}/${id}/moves`);
+}
