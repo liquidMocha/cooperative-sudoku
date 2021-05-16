@@ -1,18 +1,16 @@
-import './App.css';
+import './App.scss';
 import {BrowserRouter, Route} from 'react-router-dom';
 import Game from './Game';
-import {startNewGame} from './Api';
+import StartPage from './StartPage';
 
 function App() {
-  const handleStartNewGame = () => {
-    startNewGame().then(id => {window.location.href = `/${id}`;});
-  };
-
   return (
       <div className="App">
         <BrowserRouter>
-          <div onClick={handleStartNewGame}>New Game</div>
-          <Route path="/:id">
+          <Route path='/start'>
+            <StartPage/>
+          </Route>
+          <Route path="/game/:id">
             <Game/>
           </Route>
         </BrowserRouter>

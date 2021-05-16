@@ -1,0 +1,33 @@
+.start-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: auto;
+  margin-bottom: auto;
+  height: 100%;
+
+  * {
+    margin-bottom: 2rem;
+  }
+
+  button {
+    background-color: black;
+    color: white;
+    border-radius: 1.5rem;
+    font-size: 2rem;
+    padding: 1rem;
+  }
+
+  .join-game-expander {
+    display: flex;
+
+    svg {
+      margin-left: 2rem;
+      height: 4rem;
+    }
+  }
+
+  input {
+    font-size: 2rem;
+  }
+}
